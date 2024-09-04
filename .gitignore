@@ -1,0 +1,12 @@
+﻿# IDEs
+.idea/
+.vs/
+.code/
+
+# OBJ files
+*.obj
+*.dll
+*.exe
+obj/
+bin/
+publish/
