@@ -68,7 +68,9 @@ public class LostFreelancerModule(ApplicationConfiguration configuration, LostFr
             return;
         }
 
-        string message = $"The last user was banned on {lastFreelancer.Time:yyyy/MM/dd}\n";
+        string message = $"The last user was banned on {lastFreelancer.Time:yyyy/MM/dd}\n" +
+                         $"It has been: {(DateTime.UtcNow - lastFreelancer.Time).Humanize(maxUnit: TimeUnit.Month, minUnit: TimeUnit.Day, precision: 7)} " +
+                         "since the last lost freelancer.\n\n";
         
         IUser? adminUser = await Context.Client.GetUserAsync(lastFreelancer.BanningAdmin);
         IUser? lastUser = await Context.Client.GetUserAsync(lastFreelancer.BannedUser);
