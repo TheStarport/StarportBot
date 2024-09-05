@@ -90,10 +90,10 @@ services.AddSingleton(new InteractiveConfig()
     ProcessSinglePagePaginators = true
 });
 
-services.AddSingleton<EventHandler>();
 services.AddSingleton<InteractiveService>();
-
 services.AddSingleton<LostFreelancerCollection>();
+
+services.AddHostedService<EventHandler>();
 
 var host = builder.Build();
 
