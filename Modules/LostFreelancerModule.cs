@@ -92,10 +92,32 @@ public class LostFreelancerModule(ApplicationConfiguration configuration, LostFr
         await RespondAsync(embed: builder.Build());
     }
 
-    [SlashCommand("listlostfreelancer", "Gets the last lost Freelancer")]
+    [SlashCommand("listlostfreelancer", "Gets a list of the admins/moderators who have " +
+                                        "banned the most lost freelancers.")]
     public async Task GetLostFreelancerListAsync()
     {
-        
+        var leaderboard = await lostFreelancerCollection.GetAdminLeaderboard();
+
+        var fields = await Task.WhenAll(leaderboard.Select(async x =>
+        {
+            var user = await Context.Client.GetUserAsync(x.Item1);
+            var name = user is not null
+                ? user.GlobalName ?? user.Username
+                : "Account Deleted";
+
+            return new EmbedFieldBuilder()
+                .WithName(name)
+                .WithValue(x.Item2)
+                .WithIsInline(true);
+        }));
+
+        var embedBuilder = new EmbedBuilder();
+        embedBuilder
+            .WithSuccess()
+            .WithTitle("Banning Leaderboard")
+            .WithFields(fields);
+
+        await RespondAsync(embed: embedBuilder.Build());
     }
 
     private async Task<bool> BanIfPossibleAsync(IUser user)

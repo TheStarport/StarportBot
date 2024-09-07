@@ -27,6 +27,20 @@ public class LostFreelancerCollection
 
         return await user.FirstOrDefaultAsync();
     }
+
+    public async Task<List<(ulong, int)>> GetAdminLeaderboard()
+    {
+        var aggregate = await _lostUsers
+            .Aggregate()
+            .Group(x => x.BanningAdmin, x => new
+            {
+                _id = x.Key,
+                Count = x.Count()
+            })
+            .ToListAsync();
+
+        return aggregate.Select(x => (x._id, x.Count)).ToList();
+    }
     
     public async Task<bool> AddNewLostFreelancerAsync(LostUser user)
     {
